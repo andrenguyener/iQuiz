@@ -10,7 +10,8 @@ import UIKit
 
 var points = 0
 var questions : [String] = []
-
+var questionArray = [Question(answer: "", answers: [""], text: "" )] // array of questions
+var topic : Topic = Topic(title: "", desc: "", img: "", questions: questionArray) //
 class QuestionViewController: UIViewController {
 
     @IBOutlet weak var question: UILabel!
@@ -32,6 +33,10 @@ class QuestionViewController: UIViewController {
     var onQuestionResults = false
     var appdata = AppData.shared
     @IBOutlet weak var pageTitle: UINavigationItem!
+    
+    var topicObj : Topic = Topic(title: "", desc: "", img: "", questions: []) // get Topic object
+    var questionObj : Question = Question(answer: "", answers: [""], text: "")
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -54,46 +59,25 @@ class QuestionViewController: UIViewController {
     
     // function that displays new question
     func newQuestion() {
-        switch(myIndex) {
-        case 0 :
-            pageTitle.title = appdata.quizzes[0]
-            questions = appdata.mathQuestions
-            answers = appdata.mathAnswers
-        case 1 :
-            pageTitle.title = appdata.quizzes[1]
-            questions = appdata.scienceQuestions
-            answers = appdata.scienceAnswers
-        case 2 :
-            pageTitle.title = appdata.quizzes[2]
-            questions = appdata.heroQuestions
-            answers = appdata.heroAnswers
-        default :
-            pageTitle.title = appdata.quizzes[0]
-            questions = appdata.mathQuestions
-            answers = appdata.mathAnswers
-        }
-        question.text = questions[currentQuestion]
-        rightAnswerPlacement = arc4random_uniform(4) + 1
+        topicObj = appdata.topics[myIndex]
+        pageTitle.title = topicObj.title
+        questionArray = topicObj.questions
+        let singleQuestion = questionArray[currentQuestion]
+        answers = [singleQuestion.answers]
+        question.text = singleQuestion.text
         // Create a button
         var button:UIButton = UIButton()
         var x = 1
         
         for i in 1...4 {
-            // Create a button
             button = view.viewWithTag(i) as! UIButton
-            if (i == Int(rightAnswerPlacement)) { // if i button index is equal to rightAnswerPlacement
-                button.setTitle(answers[currentQuestion][0], for: .normal)
-            } else {
-                button.setTitle(answers[currentQuestion][x], for: .normal)
-                x += 1
-            }
+            button.setTitle(singleQuestion.answers[x - 1], for: .normal)
+            x += 1
         }
-        currentQuestion += 1
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        nextBut.isHidden = true
         newQuestion()
     }
     
@@ -103,11 +87,12 @@ class QuestionViewController: UIViewController {
     
     
     @IBAction func submitPressed(_ sender: Any) {
-        currentButton.isSelected = false
         if onQuestionResults {
             nextQuestion()
         } else {
-            if (currentTag == Int(rightAnswerPlacement)) {
+            currentButton.isSelected = false
+            print(currentQuestion)
+            if (currentTag == Int(questionArray[currentQuestion].answer)!) {
                 points += 1
                 let green = UIColor(red: 50.0/255.0, green: 205.0/255.0, blue: 50.0/255.0, alpha: 1.0)
                 currentButton.backgroundColor = green
@@ -115,13 +100,12 @@ class QuestionViewController: UIViewController {
                 currentButton.backgroundColor = UIColor.red
                 currentButton.setTitleColor(UIColor.white, for: .normal)
             }
-            //        nextBut.isHidden = false
             var tempTag = 1
             for i in 1...4 {
                 let button = view.viewWithTag(i) as? UIButton
                 button?.isEnabled = false
                 button?.setTitleColor(UIColor.white, for: .normal)
-                if (i == Int(rightAnswerPlacement)) {
+                if (i == Int(questionArray[currentQuestion].answer)) {
                     let green = UIColor(red: 50.0/255.0, green: 205.0/255.0, blue: 50.0/255.0, alpha: 1.0)
                     button?.backgroundColor = green
                     onQuestionResults = true
@@ -130,7 +114,6 @@ class QuestionViewController: UIViewController {
                 tempTag += 1
             }
         }
-//        nextQuestion()
     }
     
     @IBAction func backPressed(_ sender: Any) {
@@ -139,11 +122,11 @@ class QuestionViewController: UIViewController {
     }
     
     func nextQuestion() {
-        if (currentQuestion != questions.count) {
+        if (currentQuestion != appdata.topics[myIndex].questions.count - 1) {
+            currentQuestion += 1
             newQuestion()
             currentButton.isSelected = false
             onQuestionResults = false
-            //            currentButton.backgroundColor = UIColor.clear
             for i in 1...4 {
                 let button = view.viewWithTag(i) as? UIButton
                 button?.isEnabled = true
@@ -151,10 +134,10 @@ class QuestionViewController: UIViewController {
                 let color = UIColor(red: 0.0, green: 122.0/255.0, blue: 1.0, alpha: 1.0)
                 button?.setTitleColor(color, for: .normal)
             }
+            
         } else {
             performSegue(withIdentifier: "results", sender: self)
         }
-//        nextBut.isHidden = true
     }
     
 }

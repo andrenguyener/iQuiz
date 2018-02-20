@@ -15,12 +15,13 @@ class ResultsViewController: UIViewController {
     var appdata = AppData.shared
     override func viewDidLoad() {
         super.viewDidLoad()
-        if points / questions.count == 1 {
-            resultScore.text = "Amazing!!!! You got \(points)/\(questions.count)"
-        } else if Double(points) / Double(questions.count) >= 0.5 {
-            resultScore.text = "You did aight! You got \(points)/\(questions.count)"
+        let questionsCount = appdata.topics[myIndex].questions.count
+        if points / questionsCount == 1 {
+            resultScore.text = "Amazing!!!! You got \(points)/\(questionsCount)"
+        } else if Double(points) / Double(topic.questions.count) >= 0.5 {
+            resultScore.text = "You did aight! You got \(points)/\(questionsCount)"
         }  else {
-            resultScore.text = "You Suck! You got \(points)/\(questions.count)"
+            resultScore.text = "You Suck! You got \(points)/\(questionsCount)"
         }
         points = 0
     }
