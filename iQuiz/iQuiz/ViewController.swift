@@ -137,7 +137,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     @objc func getData(jsonLink: String) {
         self.appdata.topics.removeAll()
         let url = URL(string: jsonLink.trimmingCharacters(in: .whitespacesAndNewlines))
-        if checkReachability() {
+        if checkReachability() && jsonLink.count > 0 {
             let task = URLSession.shared.dataTask(with: url!) { (data, response, error) in
                 if error != nil {
                     let alertController = UIAlertController(title: "JSON Fail", message: "Unable to download data", preferredStyle: .alert)

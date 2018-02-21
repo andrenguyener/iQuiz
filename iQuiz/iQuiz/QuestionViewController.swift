@@ -95,7 +95,8 @@ class QuestionViewController: UIViewController {
             if (currentTag == Int(questionArray[currentQuestion].answer)!) {
                 points += 1
                 let green = UIColor(red: 50.0/255.0, green: 205.0/255.0, blue: 50.0/255.0, alpha: 1.0)
-                currentButton.backgroundColor = green
+//                currentButton.backgroundColor = green
+                currentButton.backgroundColor = UIColor.orange
             } else {
                 currentButton.backgroundColor = UIColor.red
                 currentButton.setTitleColor(UIColor.white, for: .normal)
@@ -107,7 +108,8 @@ class QuestionViewController: UIViewController {
                 button?.setTitleColor(UIColor.white, for: .normal)
                 if (i == Int(questionArray[currentQuestion].answer)) {
                     let green = UIColor(red: 50.0/255.0, green: 205.0/255.0, blue: 50.0/255.0, alpha: 1.0)
-                    button?.backgroundColor = green
+//                    button?.backgroundColor = green
+                    button?.backgroundColor = UIColor.orange
                     onQuestionResults = true
                     nextBut.setTitle("next", for: .normal)
                 }
